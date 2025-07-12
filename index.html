@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    #todo-form input {
+      padding: 10px;
+      width: 70%;
+      margin-right: 10px;
+    }
+    #todo-form button {
+      padding: 10px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 10px;
+      background: #fff;
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .delete-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📋 My To-Do List</h1>
+
+  <div id="todo-form">
+    <input type="text" id="task-input" placeholder="Enter a new task..." />
+    <button onclick="addTask()">Add Task</button>
+  </div>
+
+  <ul id="task-list"></ul>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      const list = document.getElementById("task-list");
+      list.innerHTML = "";
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${task}
+          <button class="delete-btn" onclick="deleteTask(${index})">🗑️ Delete</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const input = document.getElementById("task-input");
+      const task = input.value.trim();
+      if (task) {
+        tasks.push(task);
+        input.value = "";
+        saveTasks();
+        renderTasks();
+      } else {
+        alert("⚠️ Cannot add an empty task.");
+      }
+    }
+
+    function deleteTask(index) {
+      if (confirm("Are you sure you want to delete this task?")) {
+        tasks.splice(index, 1);
+        saveTasks();
+        renderTasks();
+      }
+    }
+
+    // Load tasks on page load
+    renderTasks();
+  </script>
+
+</body>
+</html>
